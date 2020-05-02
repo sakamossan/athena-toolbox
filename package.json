@@ -1,0 +1,38 @@
+{
+  "name": "athena-toolbox",
+  "version": "0.0.0",
+  "description": "Amazon Athena utilities",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/sakamossan/athena-toolbox.git"
+  },
+  "keywords": [
+    "athena"
+  ],
+  "author": "sakamoto_akira_ <mild7caloriemategreentea@gmail.com> (https://twitter.com/sakamoto_akira_)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sakamossan/athena-toolbox/issues"
+  },
+  "homepage": "https://github.com/sakamossan/athena-toolbox#readme",
+  "dependencies": {
+    "amazon-s3-uri": "^0.0.3",
+    "athena-client": "^2.5.1",
+    "aws-sdk": "^2.668.0",
+    "lodash": "^4.17.15",
+    "strftime": "^0.10.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.2.1",
+    "@types/node": "10",
+    "aws-sdk-mock": "^5.1.0",
+    "jest": "^25.5.3",
+    "ts-jest": "^25.4.0",
+    "ts-node": "^8.9.1",
+    "typescript": "^3.8.3"
+  }
+}
