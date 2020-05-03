@@ -1,6 +1,6 @@
 {
   "name": "athena-toolbox",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Amazon Athena utilities",
   "main": "./dist/index.js",
   "scripts": {
