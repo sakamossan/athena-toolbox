@@ -4,7 +4,8 @@
   "description": "Amazon Athena utilities",
   "main": "./dist/index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
