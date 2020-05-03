@@ -4,8 +4,13 @@
   "description": "Amazon Athena utilities",
   "main": "./dist/index.js",
   "scripts": {
+    "pretest": "npm run clean",
     "test": "jest",
-    "build": "tsc"
+    "build": "tsc",
+    "clean": "rm -rf ./dist/*",
+    "ignoregen": "scripts/ignoregen.js",
+    "prepublish": "npm test",
+    "prepare": "npm build && npm run ignoregen"
   },
   "repository": {
     "type": "git",
@@ -32,6 +37,7 @@
     "@types/lodash": "^4.14.150",
     "@types/node": "10",
     "aws-sdk-mock": "^5.1.0",
+    "ignore": "^5.1.4",
     "jest": "^25.5.3",
     "ts-jest": "^25.4.0",
     "ts-node": "^8.9.1",
