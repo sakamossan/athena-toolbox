@@ -22,7 +22,7 @@ export class HiveSymlinkTextInputGenerator {
   async listTargetLogFiles({
     distributionId: cloudFrontDistributionId,
     logging: loggingConfig,
-  }: CloudFrontLoggingConfig) {
+  }: LoggingConfig) {
     const ymd = strftime('%F', this.date);
     const logPrefix = loggingConfig.prefix.endsWith('/')
       ? loggingConfig.prefix
@@ -83,9 +83,7 @@ export class CloudFrontClient {
     const response = await this.cloudfront.getDistribution({ Id }).promise();
     const Logging = response.Distribution?.DistributionConfig.Logging;
     if (!Logging) {
-      throw Error(
-        `Failed to get LoggingConfig of CloudFront-DistributionId:${Id}`
-      );
+      return;
     }
     const { Bucket, Prefix } = Logging;
     const BucketName = Bucket.replace('.s3.amazonaws.com', '');
@@ -101,7 +99,7 @@ export class CloudFrontClient {
 
 export const generateHiveSymlinkTextOfCloudFrontAccessLog = async (
   args: HiveSymlinkTextInputGeneratorConstructor & {
-    cloudFrontLoggingConfig: CloudFrontLoggingConfig;
+    cloudFrontLoggingConfig: LoggingConfig;
   }
 ) => {
   const { date, s3, cloudFrontLoggingConfig, symlinkLocation } = args;
@@ -124,7 +122,10 @@ export const listCloudFrontLoggingConfig = async ({
 }) => {
   const client = new CloudFrontClient(cloudfront);
   const ids = await client.listDistributionIds();
-  return Promise.all(ids.map((id) => client.getDistributionLoggingConfig(id)));
+  const configs = await Promise.all(
+    ids.map((id) => client.getDistributionLoggingConfig(id))
+  );
+  return configs.filter((c) => !!c);
 };
 
 type HiveSymlinkTextInputGeneratorConstructor = {
@@ -134,9 +135,13 @@ type HiveSymlinkTextInputGeneratorConstructor = {
   symlinkLocation: string;
 };
 
-type CloudFrontLoggingConfig = AsyncReturnType<
-  CloudFrontClient['getDistributionLoggingConfig']
->;
+type LoggingConfig = {
+  distributionId: string;
+  logging: {
+    bucket: string;
+    prefix: string;
+  };
+};
 
 type AsyncReturnType<T extends (...args: any) => any> = ReturnType<
   T

@@ -2,7 +2,10 @@
   "name": "athena-toolbox",
   "version": "0.0.1",
   "description": "Amazon Athena utilities",
+  "module": "commonjs",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "typings": "./dist/index.d.ts",
   "scripts": {
     "pretest": "npm run clean",
     "test": "jest",
