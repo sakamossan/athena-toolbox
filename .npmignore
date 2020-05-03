@@ -36,10 +36,11 @@ jspm_packages/
 .npm
 
 .envrc*
-dist/
 
 default.code-workspace
 README.md
 __tests__/
 src/
+index.ts
 jest.config.js
+tsconfig.json
