@@ -1,6 +1,7 @@
 import { S3, CloudFront } from 'aws-sdk';
 import strftime from 'strftime';
 import s3uri from 'amazon-s3-uri';
+import { dir } from './Utility';
 
 export class HiveSymlinkTextInputGenerator {
   s3: S3;
@@ -14,9 +15,7 @@ export class HiveSymlinkTextInputGenerator {
   }: HiveSymlinkTextInputGeneratorConstructor) {
     this.s3 = s3;
     this.date = date;
-    this.symlinkLocation = symlinkLocation.endsWith('/')
-      ? symlinkLocation
-      : `${symlinkLocation}/`;
+    this.symlinkLocation = dir(symlinkLocation);
   }
 
   async listTargetLogFiles({
