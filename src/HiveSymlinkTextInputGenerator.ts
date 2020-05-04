@@ -62,7 +62,7 @@ export class HiveSymlinkTextInputGenerator {
     return this.s3
       .upload({
         Bucket: bucket,
-        Key: `${key}date=${strftime('%F', this.date)}/symlink.txt`,
+        Key: `${key}pdate=${strftime('%F', this.date)}/symlink.txt`,
         Body: targetLogFiles.join('\n'),
       })
       .promise();
