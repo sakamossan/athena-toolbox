@@ -754,10 +754,9 @@ asynckit@^0.4.0:
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha1-x57Zf380y48robyXkLzDZkdLS3k=
 
-athena-client@^2.5.1:
+"athena-client@git+https://github.com/sakamossan/node-athena.git":
   version "2.5.1"
-  resolved "https://registry.yarnpkg.com/athena-client/-/athena-client-2.5.1.tgz#e0f0506e4227539fc4ab79a7b4ab41a4506f1cda"
-  integrity sha512-o13fi9RkaVQlMMeWK6Lcgaqe61GfwDwuvTIo/K7NUNUrltLlx5Y2/ZqqgfE1cU0C6PkinsDx5LQIpnZoZlptuw==
+  resolved "git+https://github.com/sakamossan/node-athena.git#cee3dbf8f73337bcdf35dffbda850dd71c4bb0cd"
   dependencies:
     aws-sdk "^2.449.0"
     csv-parser "^1.12.1"

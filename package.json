@@ -30,7 +30,7 @@
   "homepage": "https://github.com/sakamossan/athena-toolbox#readme",
   "dependencies": {
     "amazon-s3-uri": "^0.0.3",
-    "athena-client": "^2.5.1",
+    "athena-client": "git+https://github.com/sakamossan/node-athena.git",
     "aws-sdk": "^2.668.0",
     "lodash": "^4.17.15",
     "strftime": "^0.10.0"
