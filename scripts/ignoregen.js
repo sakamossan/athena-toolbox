@@ -12,8 +12,6 @@ fs.writeFileSync('.npmignore', [
   'README.md',
   '__tests__/',
   'dist/__tests__',
-  'src/',
-  'index.ts',
   'jest.config.js',
   'tsconfig.json',
 ].join('\n'));

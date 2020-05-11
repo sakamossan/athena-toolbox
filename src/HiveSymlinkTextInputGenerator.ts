@@ -59,10 +59,11 @@ export class HiveSymlinkTextInputGenerator {
     >
   ) {
     const { bucket, key } = s3uri(this.symlinkLocation);
+    const id = this.cloudFrontLoggingConfig.distributionId;
     return this.s3
       .upload({
         Bucket: bucket,
-        Key: `${key}pdate=${strftime('%F', this.date)}/symlink.txt`,
+        Key: `${dir(key)}${id}/pdate=${strftime('%F', this.date)}/symlink.txt`,
         Body: targetLogFiles.join('\n'),
       })
       .promise();

@@ -162,7 +162,7 @@ describe('generateHiveSymlinkTextOfCloudFrontAccessLog', () => {
       (param: AWS.S3.PutObjectRequest, callback: Function) => {
         expect(param).toEqual({
           Bucket: 'ln-bucket',
-          Key: 'path/to/pdate=2020-01-23/symlink.txt',
+          Key: 'path/to/testdistid/pdate=2020-01-23/symlink.txt',
           Body: ['s3://cf-bucket/c/a', 's3://cf-bucket/c/b'].join('\n'),
         });
         callback(null, {});
