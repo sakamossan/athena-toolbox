@@ -7,27 +7,28 @@ export class HiveSymlinkTextInputGenerator {
   s3: S3;
   date: Date;
   symlinkLocation: string;
+  cloudFrontLoggingConfig: HiveSymlinkTextInputGeneratorConstructor['cloudFrontLoggingConfig'];
 
   constructor({
     s3,
     date,
     symlinkLocation,
+    cloudFrontLoggingConfig,
   }: HiveSymlinkTextInputGeneratorConstructor) {
     this.s3 = s3;
     this.date = date;
     this.symlinkLocation = dir(symlinkLocation);
+    this.cloudFrontLoggingConfig = cloudFrontLoggingConfig;
   }
 
-  async listTargetLogFiles({
-    distributionId: cloudFrontDistributionId,
-    logging: loggingConfig,
-  }: LoggingConfig) {
+  async listTargetLogFiles() {
+    const { distributionId, logging } = this.cloudFrontLoggingConfig;
     const ymd = strftime('%F', this.date);
-    const logPrefix = loggingConfig.prefix.endsWith('/')
-      ? loggingConfig.prefix
-      : `${loggingConfig.prefix}/`;
+    const logPrefix = logging.prefix.endsWith('/')
+      ? logging.prefix
+      : `${logging.prefix}/`;
     // https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/AccessLogs.html#AccessLogsFileNaming
-    const searchPrefix = `${logPrefix}${cloudFrontDistributionId}.${ymd}`;
+    const searchPrefix = `${logPrefix}${distributionId}.${ymd}`;
 
     let targetLogFileNames: string[] = [];
     let ContinuationToken;
@@ -37,12 +38,12 @@ export class HiveSymlinkTextInputGenerator {
         .listObjectsV2({
           Prefix: searchPrefix,
           ContinuationToken,
-          Bucket: loggingConfig.bucket,
+          Bucket: logging.bucket,
         })
         .promise();
       const keys = response.Contents?.reduce((acc: string[], i) => {
         if (i.Key) {
-          acc.push(`s3://${loggingConfig.bucket}/${i.Key}`);
+          acc.push(`s3://${logging.bucket}/${i.Key}`);
         }
         return acc;
       }, []);
@@ -97,19 +98,16 @@ export class CloudFrontClient {
 }
 
 export const generateHiveSymlinkTextOfCloudFrontAccessLog = async (
-  args: HiveSymlinkTextInputGeneratorConstructor & {
-    cloudFrontLoggingConfig: LoggingConfig;
-  }
+  args: HiveSymlinkTextInputGeneratorConstructor
 ) => {
   const { date, s3, cloudFrontLoggingConfig, symlinkLocation } = args;
   const generator = new HiveSymlinkTextInputGenerator({
     s3,
     date,
     symlinkLocation,
+    cloudFrontLoggingConfig,
   });
-  const targetLogFileList = await generator.listTargetLogFiles(
-    cloudFrontLoggingConfig
-  );
+  const targetLogFileList = await generator.listTargetLogFiles();
   await generator.putSymlink(targetLogFileList);
   return targetLogFileList;
 };
@@ -132,13 +130,12 @@ type HiveSymlinkTextInputGeneratorConstructor = {
   date: Date;
   // eg, s3://YourBucket/Path/To
   symlinkLocation: string;
-};
-
-type LoggingConfig = {
-  distributionId: string;
-  logging: {
-    bucket: string;
-    prefix: string;
+  cloudFrontLoggingConfig: {
+    distributionId: string;
+    logging: {
+      bucket: string;
+      prefix: string;
+    };
   };
 };
 

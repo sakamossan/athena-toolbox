@@ -12,7 +12,13 @@ AWSMock.setSDKInstance(AWS);
 describe('HiveSymlinkTextInputGenerator', () => {
   afterEach(() => AWSMock.restore('S3'));
 
-  function buildGenerator() {
+  function buildGenerator(cloudFrontLoggingConfig: {
+    distributionId: string;
+    logging: {
+      bucket: string;
+      prefix: string;
+    };
+  }) {
     const s3 = new AWS.S3();
     const date = new Date('2020-01-23');
     const symlinkLocation = 's3://test-bucket-name/path/symlinks';
@@ -20,6 +26,7 @@ describe('HiveSymlinkTextInputGenerator', () => {
       s3,
       date,
       symlinkLocation,
+      cloudFrontLoggingConfig,
     });
   }
 
@@ -48,14 +55,14 @@ describe('HiveSymlinkTextInputGenerator', () => {
         }
       }
     );
-    const generator = buildGenerator();
-    const got = await generator.listTargetLogFiles({
+    const generator = buildGenerator({
       distributionId: 'zxcvbnm',
       logging: {
         prefix: 'prf',
         bucket: 'cl-accesslog',
       },
     });
+    const got = await generator.listTargetLogFiles();
     expect(got).toEqual([
       's3://cl-accesslog/c/3/a',
       's3://cl-accesslog/c/3/b',
@@ -73,16 +80,14 @@ describe('HiveSymlinkTextInputGenerator', () => {
       (param: AWS.S3.ListObjectsV2Request, callback: Function) =>
         callback('test error', {})
     );
-    const generator = buildGenerator();
-    generator
-      .listTargetLogFiles({
-        distributionId: 'zxcvbnm',
-        logging: {
-          prefix: 'prf',
-          bucket: 'cl-accesslog',
-        },
-      })
-      .catch((e) => expect(e).toBe('test error'));
+    const generator = buildGenerator({
+      distributionId: 'zxcvbnm',
+      logging: {
+        prefix: 'prf',
+        bucket: 'cl-accesslog',
+      },
+    });
+    generator.listTargetLogFiles().catch((e) => expect(e).toBe('test error'));
   });
 });
 
