@@ -109,8 +109,12 @@ export const generateHiveSymlinkTextOfCloudFrontAccessLog = async (
     cloudFrontLoggingConfig,
   });
   const targetLogFileList = await generator.listTargetLogFiles();
-  await generator.putSymlink(targetLogFileList);
-  return targetLogFileList;
+  const { Key, Bucket } = await generator.putSymlink(targetLogFileList);
+  return {
+    Key,
+    Bucket,
+    ContentFileList: targetLogFileList,
+  };
 };
 
 export const listCloudFrontLoggingConfig = async ({

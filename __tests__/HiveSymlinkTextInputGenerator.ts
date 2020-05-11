@@ -169,7 +169,9 @@ describe('generateHiveSymlinkTextOfCloudFrontAccessLog', () => {
       }
     );
 
-    const result = await generateHiveSymlinkTextOfCloudFrontAccessLog({
+    const {
+      ContentFileList,
+    } = await generateHiveSymlinkTextOfCloudFrontAccessLog({
       s3: new AWS.S3(),
       date: new Date('2020-01-23'),
       symlinkLocation: 's3://ln-bucket/path/to/',
@@ -181,7 +183,10 @@ describe('generateHiveSymlinkTextOfCloudFrontAccessLog', () => {
         },
       },
     });
-    expect(result).toEqual(['s3://cf-bucket/c/a', 's3://cf-bucket/c/b']);
+    expect(ContentFileList).toEqual([
+      's3://cf-bucket/c/a',
+      's3://cf-bucket/c/b',
+    ]);
   });
 });
 
