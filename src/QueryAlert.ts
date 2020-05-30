@@ -1,6 +1,7 @@
 import { Athena } from 'aws-sdk';
 import { default as pmap } from 'p-map';
 import { default as cronParser } from 'cron-parser';
+import { execSql } from './Utility';
 
 export const listNamedQueries = async (athena: Athena) => {
   let namedQueryIds: string[] = [];
