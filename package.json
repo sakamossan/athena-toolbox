@@ -33,6 +33,7 @@
     "athena-client": "git+https://github.com/sakamossan/node-athena.git",
     "aws-sdk": "^2.668.0",
     "lodash": "^4.17.15",
+    "p-map": "^4.0.0",
     "strftime": "^0.10.0"
   },
   "devDependencies": {
