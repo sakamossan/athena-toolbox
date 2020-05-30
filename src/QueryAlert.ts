@@ -1,7 +1,8 @@
-import { Athena, S3 } from 'aws-sdk';
+import { Athena } from 'aws-sdk';
 import { default as pmap } from 'p-map';
+import { default as cronParser } from 'cron-parser';
 
-const listNamedQueries = async (athena: Athena) => {
+export const listNamedQueries = async (athena: Athena) => {
   let namedQueryIds: string[] = [];
   let NextToken;
   let response;
@@ -27,8 +28,26 @@ const listNamedQueries = async (athena: Athena) => {
   return namedQueries.flatMap(({ NamedQuery }) => NamedQuery || []);
 };
 
-(async () => {
-  const athena = new Athena({ region: 'ap-northeast-1' });
-  const namedQuerries = await listNamedQueries(athena);
-  console.log(JSON.stringify(namedQuerries));
-})();
+export const filterNamedQueriesToExecWithCronExpression = (
+  namedQueries: Athena.NamedQuery[],
+  options: { currentDate: Date }
+) =>
+  namedQueries.flatMap((namedQuery) => {
+    const matched = namedQuery.Name.match(/^\[([ \*0-9,]{9,})\]/);
+    if (!matched) return [];
+    let interval;
+    try {
+      interval = cronParser.parseExpression(matched[1], options);
+    } catch {
+      return [];
+    }
+    const prev = interval.prev().getTime();
+    const cur = options.currentDate.getTime();
+    return cur - prev < 60 * 1000 ? namedQuery : [];
+  });
+
+// (async () => {
+//   const athena = new Athena({ region: 'ap-northeast-1' });
+//   const namedQuerries = await listNamedQueries(athena);
+//   console.log(JSON.stringify(namedQuerries));
+// })();
